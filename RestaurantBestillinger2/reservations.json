@@ -1,0 +1,16 @@
+[
+  {
+    "customerName": "Kåre Olsen",
+    "customerPhone": "99667788",
+    "count": 2,
+    "startTime": 1600,
+    "table": "D"
+  },
+  {
+    "customerName": "Ola Nordmann",
+    "customerPhone": "99887766",
+    "count": 7,
+    "startTime": 1430,
+    "table": "B"
+  }
+]
