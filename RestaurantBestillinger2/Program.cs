@@ -20,7 +20,6 @@
 
             else if (args.Length == 4) restaurant.GetReservations(hours, minutes);
             else Console.WriteLine("Error: ikke nok informasjon");
-
         }
     }
 }

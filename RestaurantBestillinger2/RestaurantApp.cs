@@ -21,20 +21,33 @@ namespace RestaurantBestillinger2
         {
             Console.WriteLine($"Reservasjoner for kl.{hours}:{minutes}:\n");
 
-            foreach (var reservation in Reservations)
+            FindAndShowReservation(hours, minutes, Reservations);
+        }
+
+        private void FindAndShowReservation(string hours, string minutes, Reservation[] reservations)
+        {
+            foreach (var reservation in reservations)
             {
                 if (IsWithinTimeFrame(hours, minutes, reservation))
                 {
-                    Console.WriteLine($"Bord: {reservation.Table}\n" +
-                        $"Navn: {reservation.CustomerName}\nTlf: {reservation.CustomerPhone}\nAntall: {reservation.Count}\n" +
-                        $"Reservert fra {reservation.StartTime} til {reservation.StartTime + 200}\n");
+                    ShowReservationInfo(reservation);
                 }
             }
         }
 
+        private void ShowReservationInfo(Reservation reservation)
+        {
+            Console.WriteLine($"Bord: {reservation.Table}\n" +
+                              $"Navn: {reservation.CustomerName}\n" +
+                              $"Tlf: {reservation.CustomerPhone}\n" +
+                              $"Antall: {reservation.Count}\n" +
+                              $"Reservert fra {reservation.StartTime} til {reservation.StartTime + 200}");
+            Console.WriteLine();
+        }
+
         public void BookReservation(string hours, string minutes, int customerCount, string customerName, string customerPhone)
         {
-            var table = FindTable(hours, minutes, customerCount);
+            var table = FindFreeTableWithCapacity(hours, minutes, customerCount);
             if (table != null)
             {
                 new Reservation()
@@ -51,7 +64,7 @@ namespace RestaurantBestillinger2
             Console.WriteLine("Ingen bord tilgjengelig");
         }
 
-        private Table FindTable(string hours, string minutes, int customerCount)
+        private Table FindFreeTableWithCapacity(string hours, string minutes, int customerCount)
         {
             var tablesByCapacity = Tables.OrderBy(t => t.Capacity);
             foreach (var table in tablesByCapacity)
@@ -64,7 +77,7 @@ namespace RestaurantBestillinger2
             return null;
         }
 
-        public bool TableIsFree(string hours, string minutes, string tableName)
+        private bool TableIsFree(string hours, string minutes, string tableName)
         {
             foreach (var reservation in Reservations)
             {
