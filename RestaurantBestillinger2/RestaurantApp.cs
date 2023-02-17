@@ -1,37 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace RestaurantBestillinger2
 {
     internal class RestaurantApp
     {
-        public Reservation[] Reservations { get; private set; }
+        public List<Reservation> Reservations { get; private set; }
         public Table[] Tables { get; private set; }
 
         public RestaurantApp(string tablesFile, string reservationsFile)
         {
             Tables = JsonConvert.Load<Table[]>(tablesFile);
-            Reservations = JsonConvert.Load<Reservation[]>(reservationsFile);
+            Reservations = JsonConvert.Load<List<Reservation>>(reservationsFile);
         }
 
         public void GetReservations(string hours, string minutes)
         {
             Console.WriteLine($"Reservasjoner for kl.{hours}:{minutes}:\n");
-
             FindAndShowReservation(hours, minutes, Reservations);
         }
 
-        private void FindAndShowReservation(string hours, string minutes, Reservation[] reservations)
+        private void FindAndShowReservation(string hours, string minutes, List<Reservation> reservations)
         {
             foreach (var reservation in reservations)
             {
-                if (IsWithinTimeFrame(hours, minutes, reservation))
-                {
-                    ShowReservationInfo(reservation);
-                }
+                if (IsWithinTimeFrame(hours, minutes, reservation)) ShowReservationInfo(reservation);
             }
         }
 
@@ -50,7 +48,7 @@ namespace RestaurantBestillinger2
             var table = FindFreeTableWithCapacity(hours, minutes, customerCount);
             if (table != null)
             {
-                new Reservation()
+                var newReservation = new Reservation()
                 {
                     Count = Convert.ToInt32(customerCount),
                     CustomerName = customerName,
@@ -58,6 +56,7 @@ namespace RestaurantBestillinger2
                     StartTime = Convert.ToInt32(hours + minutes),
                     Table = table.Name
                 };
+                Reservations.Add(newReservation);
                 Console.WriteLine($"{customerName} booket bord {table.Name} for {customerCount} personer");
                 return;
             }
@@ -92,9 +91,9 @@ namespace RestaurantBestillinger2
         private bool IsWithinTimeFrame(string hours, string minutes, Reservation reservation)
         {
             int searchedTime = Convert.ToInt32(hours + minutes);
-            int endTime = reservation.StartTime + 200;
+            int reservationEndTime = reservation.StartTime + 200;
 
-            if (reservation.StartTime <= searchedTime && endTime >= searchedTime) return true;
+            if (reservation.StartTime <= searchedTime && reservationEndTime >= searchedTime) return true;
             else return false;
         }
     }

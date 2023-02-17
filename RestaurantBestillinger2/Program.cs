@@ -1,9 +1,12 @@
-﻿namespace RestaurantBestillinger2
+﻿using System.Text.Json;
+
+namespace RestaurantBestillinger2
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+            args[1] = JsonConvert.CheckAndCreateReservationsJson(args[1], "reservations.json");
             RestaurantApp restaurant = new(args[0], args[1]);
 
             var hours = args[2];
